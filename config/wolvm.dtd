@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Noureddine (EMB) -->
+<!ELEMENT WolVM (kernelPath, VMTypes, VMmanagers)>
+<!ATTLIST WolVM
+	version CDATA #REQUIRED
+	datetime CDATA #IMPLIED
+>
+<!ELEMENT kernelPath (#PCDATA)>
+<!ELEMENT VMTypes (VMType+)>
+<!ELEMENT VMType (check, list, mac, launchVM)>
+<!ATTLIST VMType
+	id ID #REQUIRED
+	name CDATA #REQUIRED
+	version CDATA #REQUIRED
+	os CDATA #IMPLIED
+>
+<!ELEMENT check (#PCDATA)>
+<!ELEMENT list (#PCDATA)>
+<!ATTLIST list
+	regex CDATA #REQUIRED
+	numRegexGroup CDATA "1"
+	parseFolder CDATA #IMPLIED
+	recursive (false | true) "false"
+>
+<!--Regex used to retrieve the list of the VM names-->
+<!ELEMENT mac (#PCDATA)>
+<!ATTLIST mac
+	regex CDATA #REQUIRED
+	numRegexGroup CDATA "1"
+>
+<!--Regex used to retrieve the MAC address-->
+<!ELEMENT launchVM (#PCDATA)>
+<!ELEMENT VMmanagers (VMmanager*)>
+<!ELEMENT VMmanager (#PCDATA)>
+<!ATTLIST VMmanager
+	name CDATA #REQUIRED
+	type IDREF #REQUIRED
+	path CDATA #REQUIRED
+>

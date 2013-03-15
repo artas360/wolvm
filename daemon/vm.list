@@ -1,0 +1,2 @@
+080027215c4e,/usr/bin/vboxmanage startvm test
+00163e000011,/usr/bin/xm create pegase

@@ -1,0 +1,9 @@
+
+
+Xen:
+	VM configuration file must have the EXACT same name as the VM's one
+	YOU MUST specify the path to your configuration files (all in the same folder) in <launchVM> field in xml configuration file as following:
+		/usr/bin/xm create PATH_TO_CONFIG_FOLDER/
+		NB : vm names will be appended at the end of this command therefor the last caracter must be '/'
+
+VMplayer -> the same than for Xen 
