@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE WolVM SYSTEM "VMmanager.dtd">
+<WolVM datetime="2012-04-18 16:00" version="0.1">
+	<kernelPath>../../noyau/daemon/daemon</kernelPath>
+	<VMTypes>
+		<VMType id="oracleVM" name="virtualbox" version="4.1.12" >
+			<check>vboxmanage</check>
+			<list regex="([a-zA-Z0-9_-]+)" numRegexGroup="1">vboxmanage list vms</list>
+			<mac regex="MAC: ([0-9A-F]{12})" numRegexGroup="1">vboxmanage showvminfo</mac>
+			<launchVM>vboxmanage startvm</launchVM>
+		</VMType>
+
+	</VMTypes>
+	<VMmanagers>
+		<VMmanager type="oracleVM" name="Ma machine de test virtual box" path="C:\Program Files\Oracle\VirtualBox\">text</VMmanager>
+	</VMmanagers>
+</WolVM>

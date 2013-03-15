@@ -1,0 +1,130 @@
+				      configure_wolvm.py
+
+NAME
+	configure_wolvm.py - python script generating configuration file for wolvm service
+
+SYNOPSIS
+	wolvm.py configure 	[-s SOURCE_CONFIG_FILE] [-d KERNEL_CONFIG_FILE]
+	wolvm.py start 		[-p PATH_TO_KERNEL]
+	wolvm.py stop 		[-p PATH_TO_KERNEL]
+	wolvm.py (-h | --help | help)
+	
+DESCRIPTION
+	configure_wolvm.py will generate the appropriate configuration file for wolvm. It will try 
+	to get necessary information from every vm manager installed on host machine. For a vm to 
+	awaken by wolvm, its vm manager must be appropriately registered in SOURCE_CONFIG_FILE (for
+	explanations see the "FILES" section of this document).
+
+OPTIONS 
+	configure
+		generate wolvm config file "KERNEL_CONFIG_FILE" (default is vm.list).
+		configure_wolvm.py will use "SOURCE_CONFIG_FILE" to determine how to get the list
+		of vms available and their associated MAC address.
+
+	start/stop 
+		will respectively start/stop the kernel located at PATH_TO_KERNEL if you specify it,
+		or at the location <kernelPath> defined in SOURCE_CONFIG_FILE.
+
+	-h, --help, help
+		print help
+
+FILES
+	SOURCE_CONFIG_FILE
+		This file contains information used by configure_wolvm.py to communicate with VM 
+		managers.
+		We strongly advise you to use DTD provided to check if you made no mistakes editing
+		this file.
+		If you want to add a non supported VM manager you must enter the appropriate 
+		information in this file as specified below:
+			SOURCE_CONFIG_FILE is an xml file witch structure is:
+			<WolVM>
+				<kernelPath>pathToKernel</kernelPath>
+				<VMTypes>
+					<VMType id='id' name='name' version='version'>
+						<check>VMmanagerCommand</check>
+						<list regex numRegexGroup>commandList</list>
+						<mac  regex numRegexGroup>commandMac</mac>
+						<launchVM>commandLaunch</launchVM>
+					</VMType>
+				</VMtypes>
+				<VMmanagers>
+					<VMmanager type='type' name="VMmanagerName" path="path"></VMmanager>
+				</VMmanagers>
+			</WolVM>
+			The <VMTypes> field contains the definition of a VMmanager type. However
+			this field contains information related to the VMmanager in itself. On
+			the other hand <VMmanagers> contains information related to the way the
+			VMmanager is installedon the host system.
+			For a VM manager to be used by configure_wolvm.py it needs to be configured
+			both in <VMTypes> and in <VMmanagers>.
+
+			To add a VM manager you must add a new <VMType> field where:
+				-id		is an unique key designing the VM manager
+				-name: 		is the name of the VM manager
+
+				-pathToVMmanager: is the name of the VM manager's command line program
+				-<list>
+					-commandList:	command to use to get the list of VMs managed by
+							the VM manager
+					-regex:		regular expression to use retrieve the name (or ID)
+							of each VM (and only its name or ID).
+							This regular expression will be applied to the
+							output of the "list" command.
+					-numRegexGroup:	number of the group matched by "regexList" that
+							cointains the VM name or ID (and only the name or
+							id)
+				-<mac>
+					-commandMac	command to use to get the MAC address associated
+							to the VM 'ID'. The ID of every mac found with 
+							"list" will be appended to the end of this command.
+					-regex:		regular expression to use to retrieve the MAC 
+							address from the output of "mac".
+					-numRegexGroup:	number of the group matched by "regexMAC" that
+							cointains the VM MAC
+				-commandLaunch: command to use to launch a VM managed by the VM
+						manager. VM name or ID will be appended at the end
+						of this command.
+
+
+			To make configure_wolvm.py use a vm manager which type has been defined in
+			<VMTypes> you need to create a <VMmanager> field in <VMmanagers> containing
+			the information specified below:
+				-type:		reference to the id of the corresponding <VMType> field
+				-name:		the name you want to give to this VM manager
+
+				-path: 		is the absolute path to the FOLDER containing 
+						your VM manager binary (last caracter must be 
+						'/' for UNIX and '\' for windows because the name
+						of the executable (in <check>) will be appended at 
+						the end of this string
+
+
+			you must also specify the absolute path to the kernel executable so that you can 
+			launch it using configure_wolvm.py
+		
+		WOLVM_PARSE_FOLDER is a special option you can specify in both the <list> and <mac>
+		field. It must be followed by an absolute path to a folder (ending with / for UNIX 
+		or \\ for windows). If this option is specified in both <list> and <mac> fields, the
+		system will then look for mac addresses in every file which name matches the <list>
+		regex. The content each file will be parsed by trying to match every line with the
+		mac regex. The first positive match ends the parsing of the file and starts the
+		analisys of the next one. 
+		N.B: Commented lines in every file can match if you don't give a regex accurate 
+		enough.
+
+	KERNEL_CONFIG_FILE
+		This file is the file in which is stored the association between the MAC addresses and the
+		used to launch them. The MAC address and the launching command of one VM are on the same 
+		line, separated by a coma and *no space*.
+		This file can be manually edited but those modifications will be lost the next time 
+		configure_wolvm.py is being run.
+
+		THIS FILE MUST IN THE SAME FOLDER THAN THE KERNEL AND MUST BE NAMED 'vm.list' (to change 
+		that you will have to recompile the kernel)
+
+SEE ALSO
+	Regular expressions in python: http://docs.python.org/library/re.html
+
+AUTHORS
+
+
